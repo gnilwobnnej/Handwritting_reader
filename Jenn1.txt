@@ -1,0 +1,22 @@
+Extracted Handwritting:
+Hello world
+This is my first Python program
+I am learning to code in python
+And I have a question for you!
+
+If I get stuck, what should I do?
+Do you know where the nearest coffee shop is?
+I would love to go there and see the city
+When I need help, who can I talk to?
+Is there any way to make me look smarter than I am
+
+Gemma Summary:
+Here's a summary of the handwritten note:
+
+This is a beginner's Python programmer's note expressing excitement and a bit of nervousness. They’re starting their coding journey and need help! They’re asking for advice on troubleshooting, where to find a coffee shop for a break, who to ask for assistance, and a little trick to seem more knowledgeable. 
+
+Essentially, it’s a relatable message about the challenges and desires of a new coder. 
+
+---
+
+Would you like me to rephrase it in a slightly different way, perhaps focusing on a specific aspect?
