@@ -75,7 +75,7 @@ def ask_gemma(text_prompt):
 
 '''
 saves everything
-f.write(text.strip())= writes the output to a text file
+saves the log entries that the user ask the questions
 '''
 def save_output(log_entries, filename):
     with open(filename, "w", encoding="utf-8") as f:
