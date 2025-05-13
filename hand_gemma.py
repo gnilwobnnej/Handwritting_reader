@@ -10,9 +10,13 @@ from io import BytesIO
 from datetime import datetime
 #to check if the file exists. 
 import os
+#wraps text
+import textwrap
 
 #gets the llms to run locally. 
-LLAVA_MODEL = "llava"
+#I changed the llava_model to be gemma3, it seems to read handwritting better.
+#leaving it like this for easy switch out.
+LLAVA_MODEL = "gemma3"
 GEMMA_MODEL = "gemma3"
 OLLAMA_URL = "http://localhost:11434/api/generate"
 
@@ -69,11 +73,16 @@ def ask_gemma(text_prompt):
 saves everything
 f.write(text.strip())= writes the output to a text file
 '''
-def save_output(text, filename):
+def save_output(log_entries, filename):
     with open(filename, "w", encoding="utf-8") as f:
-        f.write(text.strip())
+        full_text = "\n\n".join(log_entries)
+        f.write(full_text.strip())
     print(f"Output saved to: {filename}")
 
+#defines the print_wrapped to set the width to 80 characters
+def print_wrapped(text):
+    for paragraph in text.split("\n"):
+        print(textwrap.fill(paragraph, width=80))
 
 '''
 gives you input for the file that you want to upload
@@ -92,24 +101,52 @@ def main():
     filename = f"{session_name}.txt"
 #CALLS ON LLAVA TO READ THE HANDWRITTING!!!
     try:
-        print("The LLaVa is flowing...")
+        print("The Llama is reading.")
         extracted_text = ask_llava(image_path, "What does the handwriting in this image say? Return just the raw text.")
         print("\nExtracted Text:\n")
-        print(extracted_text)
-#CALLS ON GEMMA TO SUMMEARIZE OR REPHRASE
-        print("\nThe llama is summarizing or rephrasing...")
-        gemma_prompt = f"Summarize or rephrase the following handwritten note:\n\n{extracted_text}"
-        gemma_response = ask_gemma(gemma_prompt)
-#prints it all out
-        print("\nGemma Summary:\n")
-        print(gemma_response)
-#combines the two parts together. 
-        full_output = (
-            f"Extracted Handwritting:\n{extracted_text}\n\n"
-            f"Gemma Summary:\n{gemma_response}\n"
-        )
-#saves everything
-        save_output(full_output, filename)
+        print_wrapped(extracted_text)
+
+#saved this for later?
+# #CALLS ON GEMMA TO SUMMEARIZE OR REPHRASE
+#         print("\nThe llama is summarizing or rephrasing...")
+#         gemma_prompt = f"Summarize or rephrase the following handwritten note:\n\n{extracted_text}"
+#         gemma_response = ask_gemma(gemma_prompt)
+# #prints it all out
+#         print("\nGemma Summary:\n")
+#         print(gemma_response)
+# #combines the two parts together. 
+#         full_output = (
+#             f"Extracted Handwritting:\n{extracted_text}\n\n"
+#             f"Gemma Summary:\n{gemma_response}\n"
+#         )
+
+        #starts recording the session 
+        log = [f"Extracted text:\n{extracted_text}"]
+        #the question
+        print("\n Ask your questions, type 'quit' to end: ")
+        #keeps running till break allows to ask multiple questions till user enters quit
+        while True:
+            question = input("\nYou: ").strip()
+            if question.lower()=="quit":
+                break
+            
+            #combines questions with the extracted handwritting
+            gemma_input = f"{question}\n\nContext:\n{extracted_text}"
+            
+            #stores the ai answer into the variable
+            answer = ask_gemma(gemma_input)
+
+            #prints it wrapped.
+            print("\nThe Llama:\n")
+            print_wrapped(answer)
+
+            #adds everything to the log list and is saved.
+            log.append(f"You: {question}\nThe Llama: {answer}")
+ 
+ #saves everything
+        save_output(log, filename)
+
+
 #if something goes wrong.
     except Exception as e:
         print(f"Error: {e}")
