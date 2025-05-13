@@ -56,6 +56,10 @@ def ask_llava(image_path, prompt):
 
 '''
 second ask gemma to rewrite it.
+creates dictionary called payload that will be sent to ollama
+sends the payload as a post request using the ollama url- above - converts to json
+checks to see if the request is successful 200 means it's okay.
+if good, return the response value if not returns error message
 '''
 def ask_gemma(text_prompt):
     payload = {
